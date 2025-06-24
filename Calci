@@ -1,0 +1,34 @@
+import tkinter as tk
+
+# Create display window
+window = tk.Tk()
+window.title("Resizable Calculator")
+
+# Configure grid to expand
+window.rowconfigure(0, weight=1)
+for i in range(1, 5):
+    window.rowconfigure(i, weight=1)
+for i in range(4):
+    window.columnconfigure(i, weight=1)
+
+# Entry box creation
+e = tk.Entry(window, font=("Arial", 18), relief="raised", border=2)
+e.grid(row=0, column=0, columnspan=4, sticky="nsew")  # Expand with window
+
+# Buttons placement
+buttons = [
+    ("7", 1, 0), ("8", 1, 1), ("9", 1, 2), ("/", 1, 3),
+    ("4", 2, 0), ("5", 2, 1), ("6", 2, 2), ("*", 2, 3),
+    ("1", 3, 0), ("2", 3, 1), ("3", 3, 2), ("-", 3, 3),
+    ("0", 4, 0), (".", 4, 1), ("=", 4, 2), ("+", 4, 3)
+]
+
+# Create buttons dynamically
+for text, row, column in buttons:
+    b = tk.Button(window, text=text, font=("Arial", 18))
+    b.grid(row=row, column=column, sticky="nsew")  # Expand with window
+#clear button
+clear=Button(text="Clear",width=20)
+clear.grid(row=5,column=0,sticky="nsew")
+# Initiate main loop
+window.mainloop()
