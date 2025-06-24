@@ -1,0 +1,26 @@
+#from fileinput import filename
+from tkinter import *
+#Initiate Window
+window = Tk()
+window.geometry("500x500")
+#Create label
+label=Label(text="Ansh is a cricketer",bg="Yellow")
+label.grid(row="0",column="1")
+#Create menu for the window
+menu=Menu(window)
+file=Menu(menu,tearoff=0)
+file.add_command(label="New")
+file.add_command(label="Open")
+file.add_command(label="Save")
+file.add_command(label="Save as")
+file.add_separator()
+file.add_command(label="Exit",command=window.quit)
+#Config the file menu to the window
+menu.add_cascade(label="File",menu=file)
+window.config(menu=menu)
+#Checkbox adding
+checkbox1=IntVar()
+checkbutton1=Checkbutton(text="World")
+checkbutton1.place(x=100,y=100)
+#Initiate Tkinter mainloop
+window.mainloop()
