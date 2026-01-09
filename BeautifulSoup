@@ -1,0 +1,56 @@
+import time
+import pyautogui
+import pandas as pd
+import os
+import tkinter as tk
+from tkinter import filedialog
+import subprocess
+
+# Path to Chrome executable (Update if different)
+chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+
+# Ask user for Excel file
+root = tk.Tk()
+root.withdraw()  # Hide the main window
+file_path = filedialog.askopenfilename(title="Select Excel File", filetypes=[("Excel Files", "*.xlsx")])
+sheet_name = "Sheet1"
+column_name = "url"
+
+if not os.path.exists(file_path):
+    print(f"Error: File '{file_path}' not found!")
+    exit()
+
+try:
+    df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
+except Exception as e:
+    print(f"Error reading Excel file: {e}")
+    exit()
+
+if column_name not in df.columns:
+    print(f"Error: Column '{column_name}' not found in the Excel file!")
+    exit()
+
+# Open Chrome in a minimized state
+chrome_process = subprocess.Popen([chrome_path, "--new-window", "--start-minimized"])
+time.sleep(2)  # Wait for Chrome to launch
+
+for url in df[column_name].dropna():
+    print(f"Opening: {url}")
+
+    # Open URL in the existing Chrome window
+    subprocess.Popen([chrome_path, url])
+    time.sleep(5)
+
+    pyautogui.hotkey("ctrl", "shift", "u")
+    time.sleep(1.5)
+    pyautogui.press("r")
+
+    print("Refresh completed.")
+    time.sleep(3)
+
+# Close only the Chrome instance started by this script
+chrome_process.terminate()  # Gracefully close the process
+time.sleep(2)
+subprocess.run("taskkill /IM chrome.exe /F", shell=True)  # Force close if necessary
+
+print("Task done!")

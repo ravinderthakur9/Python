@@ -1,0 +1,128 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
+import time
+import pandas as pd
+from tkinter import Tk, filedialog, messagebox
+from tqdm import tqdm
+from selenium.webdriver.chrome.options import Options
+
+root = Tk()
+root.withdraw()
+
+# Dialogbox to select file
+file_path = filedialog.askopenfilename(
+    title="Select Excel File",
+    filetypes=[("Excel files", "*.xlsx *.xls")]
+)
+
+if not file_path:
+    messagebox.showinfo("Cancelled", "No file selected. Exiting.")
+    exit()
+
+# Read the Excel file
+try:
+    df = pd.read_excel(file_path)
+except Exception as e:
+    messagebox.showerror("Error", f"Failed to read the Excel file:\n{e}")
+    exit()
+
+url_column_name = 'URL'
+canonical_column_name = 'Canonical url'
+bt = 'Browser title'
+seo = 'SEO description'
+lp = 'Landing page'
+
+# Ensure URL column exists
+if url_column_name not in df.columns:
+    messagebox.showerror("Missing Column", f"Column '{url_column_name}' not found in the Excel file.")
+    exit()
+
+# Add missing columns
+if canonical_column_name not in df.columns:
+    df[canonical_column_name] = pd.Series(dtype='str')
+
+if bt not in df.columns:
+    df[bt] = pd.Series(dtype='str')
+
+if seo not in df.columns:
+    df[seo] = pd.Series(dtype='str')
+
+if lp not in df.columns:
+    df[lp] = pd.Series(dtype='str')
+
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
+#options = Options()
+#options.add_argument("--headless")  # no window
+#options.add_argument("--disable-gpu")
+#options.add_argument("--window-size=1920,1080")
+#options.add_argument("--log-level=3")  # suppress logs
+
+#driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+# Force correct data types
+df[bt] = df[bt].astype('string')
+df[lp] = df[lp].astype('string')
+df[canonical_column_name] = df[canonical_column_name].astype('string')
+df[seo] = df[seo].astype('string')
+
+# Start processing URLs
+for idx, url in tqdm(enumerate(df[url_column_name]), total=len(df), desc="Processing URLs", colour="white", ):
+    try:
+        driver.get(url)
+        time.sleep(20)  # Adjust as needed
+
+        # Browser title
+        title = driver.title
+        df.at[idx, bt] = title
+
+        # Landing page (in case of redirects)
+        landingpage = driver.current_url
+        df.at[idx, lp] = landingpage
+
+        # Canonical URL
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        canonical_tag = soup.find("link", rel="canonical")
+        if canonical_tag:
+            df.at[idx, canonical_column_name] = canonical_tag.get("href")
+        else:
+            df.at[idx, canonical_column_name] = "Not Found"
+
+        # SEO desciption
+        seo_desc = soup.find("meta", attrs={"name" : "DESCRIPTION"})
+        if seo_desc:
+            df.at[idx, seo] = seo_desc.get("content")
+        else:
+            df.at[idx, seo] = "Not Found"
+
+    except Exception as e:
+        print(f"\n⚠️ Error at index {idx}, URL: {url}\n{e}")
+        df.at[idx, bt] = "Error"
+        df.at[idx, lp] = "Error"
+        df.at[idx, canonical_column_name] = "Error"
+        df.at[idx, seo] = "Error"
+
+# Quit browser once all done
+driver.quit()
+
+success_count = df[bt].apply(lambda x: x not in ["Error", "Empty URL"]).sum()
+print(f"\n✅ Completed. {success_count} URLs processed successfully out of {len(df)}.")
+
+# Saving the file
+save_path = filedialog.asksaveasfilename(
+    title="Save Updated Excel File",
+    defaultextension=".xlsx",
+    filetypes=[("Excel files", "*.xlsx *.xls")]
+)
+
+if save_path:
+    df.to_excel(save_path, index=False)
+    messagebox.showinfo("Success", f"Updated file saved to:\n{save_path}")
+else:
+    messagebox.showinfo("Cancelled", "No save location selected. Data not saved.")
+
+
+

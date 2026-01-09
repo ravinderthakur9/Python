@@ -1,0 +1,35 @@
+import requests
+import re
+import os
+
+user = input("Enter the type of image: ")
+
+user_agent = {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+
+url = f"https://www.google.com/search?sca_esv=e0d45d95ed44ea21&sxsrf=AE3TifOYsDsDCOhbPZjVgv2X4j3CGkFtmw:1749817203278&q={user}&udm=2&fbs=AIIjpHxU7SXXniUZfeShr2fp4giZ1Y6MJ25_tmWITc7uy4KIeioyp3OhN11EY0n5qfq-zENwnGygERInUV_0g0XKeHGJIK02MUc5n41I8mJf-rA8ryvn8pznwcMeWhYyes_sPDVEKkDPhl6lgaNSJYdrj-VIpPYURh0btmgh02zc8rCOFb1kQoaEw8r2L7wStVsY3RCs57_Xppo9QeUYGGyFCNk4Gh3xnQ&sa=X&ved=2ahUKEwiE4sqGse6NAxVx-DgGHVZ6EDcQtKgLegQIFhAB&biw=2048&bih=926&dpr=0.94"
+
+response = requests.get(url=url,headers=user_agent).text
+
+pattern = r"https://[^\s\"']+\.jpg"
+
+images = re.findall(pattern,response)
+
+print(f"Total Images : {len(images)}")
+
+no_of_images = int(input("Number of images to be downloaded : "))
+
+if images:
+    if not os.path.exists(user):
+        os.mkdir(user)
+        os.chdir(user)
+    else:
+        os.chdir(user)
+
+    for image in images[:no_of_images]:
+        response = requests.get(url=image).content
+        image_name = image.split("/")[-1]
+
+        with open(image_name , "wb") as file:
+            file.write(response)
+
+print("Images downloaded and saved.")

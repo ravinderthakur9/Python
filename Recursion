@@ -1,0 +1,77 @@
+'''
+def python():
+	print("Python")
+
+python()
+'''
+'''
+#Recursion example
+import sys
+sys.setrecursionlimit(2000)
+
+n = 0
+
+def python():
+	global n
+	n = n+1
+	print("Python",n)
+	python()
+
+python()
+'''
+'''
+a = "sam"
+print("My name is ",a)
+
+ans= set(filter(lambda a : a%2==0,range(11)))
+print(ans)
+
+numbers=[1,2,3,4,5]
+ans=list(map(lambda a:a**2,numbers))
+print(ans)
+
+
+def squares():
+	n=1
+	while n<5:
+		square =  n**2
+		yield square
+		n = n + 1
+
+values = squares()
+
+for i in values:
+	print(i)
+'''
+''' class examples
+class name:
+
+	def __init__(self,z): # __init__ is constructor
+		print("Hi",z)
+
+n=name("jim") # contructors run automatically when class is called.
+
+class counting:
+	n = 0
+	def cnt(self):
+		self.n=self.n+1
+		print("Counted",self.n)
+
+c=counting()
+c.cnt() # cnt is function under classs counting and it has to called separately to run.
+c.cnt()
+'''
+# inheritance
+class first:
+	name=""
+	def __init__(self,z):
+		self.name=z
+		print("Hi",z)
+
+class football(first): #
+	def pts(self):
+		print(self.name,"scores")
+
+n=first("Jim")
+f=football("Sam")
+f.pts()

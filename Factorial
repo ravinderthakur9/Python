@@ -1,0 +1,36 @@
+digit = int(input("Enter the number : "))
+result = factorial(digit)
+print(f"Factorial of {digit} is: {result} ")
+'''
+'''
+class calculator:
+    def factorial(self,n):
+        if n == 0 or n==1:
+            return 1
+        else:
+            return n * self.factorial(n-1)
+
+digit = int(input("Enter the number : "))
+result = calculator().factorial(digit)
+print(f"Factorial of {digit} is: {result} ")
+'''
+
+#Assign3Task2
+import math
+
+def squareroot(n):
+    return math.sqrt(n)
+
+def nat_log(n):
+    return math.log(n)
+
+def sin(n):
+    return math.sin(n)
+
+digit = int(input("Enter the number : "))
+result = squareroot(digit)
+result1 = nat_log(digit)
+result2 = sin(digit)
+print(f"Square root of {digit} is: {result} ")
+print(f"Natural logarithm (log base e) of {digit} is: {result1} ")
+print(f"Sine of the number (in radians) of {digit} is: {result2} ")

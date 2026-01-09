@@ -1,0 +1,39 @@
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
+from openpyxl import load_workbook
+
+def load_urls_from_excel(file_path):
+    workbook = load_workbook(filename=file_path)
+    sheet = workbook.active
+    urls = []
+
+    header = [str(cell.value).strip().lower() for cell in sheet[1]]
+    if 'url' not in header:
+        raise ValueError("The Excel file must have a column named 'URL' (case-insensitive) in the first row.")
+
+    url_col_index = header.index('url')
+
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if row and len(row) > url_col_index:
+            url = row[url_col_index]
+            if url:
+                urls.append(url)
+    return urls
+
+if __name__ == "__main__":
+    # Hide the root tkinter window
+    Tk().withdraw()
+
+    # Open file dialog to select the Excel file
+    file_path = askopenfilename(
+        title="Select Excel file",
+        filetypes=[("Excel files", "*.xlsx *.xls")]
+    )
+
+    if not file_path:
+        print("No file selected. Exiting.")
+    else:
+        urls = load_urls_from_excel(file_path)
+        print("Loaded URLs:")
+        for i, url in enumerate(urls, start=1):
+            print(f"{i}: {url}")
