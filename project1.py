@@ -16,8 +16,10 @@ def validate_data():
     domain_list = df1["Domain"].astype(str).str.strip().str.lower()
     search_usergroup = str(df.iloc[0]["UserGroup"]).strip().lower()
     usergroup_list = df1["UserGroup"].astype(str).str.strip().str.lower()
+    print(df["Domain"][0])
+    print(search_domain)
 
-    if search_domain in domain_list.values and search_usergroup in usergroup_list.values:
+    if search_domain in domain_list.values or search_usergroup in usergroup_list.values:
         result_label1.config(text=f"Match found: Domain {search_domain} and UserGroup {search_usergroup}")
         status_label.config(text="Status: Data validated successfully and need to looked into as errors found.")
     else:

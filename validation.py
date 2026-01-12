@@ -1,8 +1,8 @@
 import pandas as pd
 
 def validate_data():
-    df = pd.read_excel(r"C:\Users\Ravin\OneDrive\Desktop\vanity.xlsx")
-    df1 = pd.read_excel(r"C:\Users\Ravin\OneDrive\Desktop\validatedata.xlsx")
+    df = pd.read_excel(r"C:\Users\Shiv_Ravinder_Singh\Downloads\intake_template_validated.xlsx")
+    df1 = pd.read_excel(r"C:\Users\Shiv_Ravinder_Singh\OneDrive - Dell Technologies\Desktop\validatedata.xlsx")
 
     search_domain = str(df.iloc[0]["Domain"]).strip().lower()
 
