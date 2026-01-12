@@ -1,0 +1,52 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+
+def remove_element_by_id(driver, id_str):
+    try:
+        driver.execute_script(f"""
+            const el = document.getElementById("{id_str}");
+            if (el) el.remove();
+        """)
+        print(f"Removed element: #{id_str}")
+    except Exception as e:
+        print(f"Could not remove #{id_str}: {e}")
+
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver.get("https://www.dell.com/en-us")
+driver.maximize_window()
+
+wait = WebDriverWait(driver, 20)
+
+# Remove modal on home page
+try:
+    wait.until(EC.presence_of_element_located((By.ID, "dell-oocmessage")))
+    remove_element_by_id(driver, "dell-oocmessage")
+except:
+    print("Modal not found on home page.")
+
+# Click Laptops link
+laptops_link = wait.until(EC.element_to_be_clickable(
+    (By.XPATH, '//a[@class="first-level" and contains(@aria-label, "Laptops")]')
+))
+print("Clicking Laptops...")
+laptops_link.click()
+
+# Wait for laptops page to load
+time.sleep(5)
+
+# Remove popups on second page
+remove_element_by_id(driver, "dell-oocmessage")          # Modal reappears
+remove_element_by_id(driver, "unified-modal")            # Feedback popup
+remove_element_by_id(driver, "onetrust-banner-sdk")      # Cookie notice
+
+# Wait to view the result before quitting
+time.sleep(5)
+driver.quit()
+
+
+

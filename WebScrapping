@@ -1,0 +1,57 @@
+import openpyxl
+import requests
+from bs4 import BeautifulSoup
+
+excel_file_path = r"C:\Users\Shiv_Ravinder_Singh\OneDrive - Dell Technologies\Desktop\web_links.xlsx"
+
+def sanitize_url(url):
+    url = url.strip()
+    if not url.startswith("http://") and not url.startswith("https://"):
+        return f"https://{url}"
+    return url
+
+def get_page_details_and_destination_url(url):
+
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        destination_url = response.url
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        title = soup.title.string.strip() if soup.title else "No Title Found"
+
+        meta_description = (
+            soup.find("meta", attrs={"name": "description"}) or
+            soup.find("meta", attrs={"property": "og:description"})
+        )
+        description = (
+            meta_description["content"].strip()
+            if meta_description and meta_description.get("content")
+            else "No Description Found"
+        )
+        return title, description, destination_url
+    except requests.exceptions.RequestException as e:
+        return f"Error: {e}", "No Description Found", "No Destination URL"
+
+workbook = openpyxl.load_workbook(excel_file_path)
+sheet = workbook.active
+
+for row in sheet.iter_rows(min_row=2, max_col=7):
+    url_cell = row[2]
+    if url_cell.value:
+        url = sanitize_url(url_cell.value)
+        print(f"Processing: {url}")
+        title, description, destination_url = get_page_details_and_destination_url(url)
+
+        sheet.cell(row=url_cell.row, column=5).value = title
+        sheet.cell(row=url_cell.row, column=6).value = description
+        sheet.cell(row=url_cell.row, column=7).value = destination_url
+        print(f"Row: {url_cell.row}, URL: {url}, Destination URL: {destination_url}, Title: {title}, Description: {description}")
+
+
+workbook.save(excel_file_path)
+print("Titles, descriptions, and destination URLs have been added and saved.")

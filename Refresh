@@ -1,0 +1,59 @@
+import subprocess
+import time
+import pyautogui
+import pandas as pd
+import os
+import tkinter as tk
+from tkinter import filedialog
+
+root = tk.Tk()
+root.withdraw()
+file_path = filedialog.askopenfilename(title="Select Excel File", filetypes=[("Excel Files", "*.xlsx")])
+sheet_name = "Sheet1"
+column_name = "url"
+
+if not os.path.exists(file_path):
+    print(f"error: file '{file_path}' not found!")
+    exit()
+
+try:
+    df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
+except Exception as e:
+    print(f"error reading excel file: {e}")
+    exit()
+
+if column_name not in df.columns:
+    print(f"error: column '{column_name}' not found in the excel file!")
+    exit()
+
+chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+
+first = True
+for url in df[column_name].dropna():
+    print(f"opening: {url}")
+
+    if first:
+        subprocess.Popen([chrome_path, "--new-window", url])
+        first = False
+    else:
+        subprocess.Popen([chrome_path, url])
+
+    time.sleep(5)
+
+    pyautogui.hotkey("ctrl", "shift", "u")
+    time.sleep(1.5)
+
+    pyautogui.press("r")
+    time.sleep(2)
+
+    pyautogui.press("enter")
+    time.sleep(1)
+
+    print("Initial Refresh completed.")
+    time.sleep(3)
+    pyautogui.hotkey("ctrl", "r")
+
+    print("Page Reloaded Successfully.")
+    time.sleep(3)
+
+print("Task done!")

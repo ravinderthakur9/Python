@@ -1,0 +1,51 @@
+import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+from bs4 import BeautifulSoup
+
+# Setup Selenium Chrome options
+options = Options()
+options.add_argument("--start-maximized")
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/137 Safari/537.36")
+
+# Start driver
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+# Load Excel file
+df = pd.read_excel(r"C:\Users\Shiv_Ravinder_Singh\OneDrive - Dell Technologies\Desktop\Sample excel sheet.xlsx")  # make sure 'urls.xlsx' exists and has a column named 'URL'
+
+# Create a new column for canonical URLs
+canonical_urls = []
+
+# Loop through each URL
+for index, row in df.iterrows():
+    url = row["URL"]
+    print(f"Opening: {url}")
+    try:
+        driver.get(url)
+        time.sleep(20)  # Adjust if needed
+
+        # Try to find the canonical tag
+        canonical = driver.find_element(By.XPATH, "//link[@rel='canonical']").get_attribute("href")
+        print("Canonical URL:", canonical)
+        canonical_urls.append(canonical)
+    except Exception as e:
+        print("Error:", e)
+        canonical_urls.append("Not found")
+
+# Close the browser
+driver.quit()
+
+# Add results to DataFrame
+df["Canonical_URL"] = canonical_urls
+
+# Save back to Excel
+df.to_excel(r"C:\Users\Shiv_Ravinder_Singh\OneDrive - Dell Technologies\Desktop\Sample excel sheet.xlsx", index=False)
+print("Saved to urls_with_canonical.xlsx")
+
+

@@ -1,0 +1,64 @@
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from tkinter import Tk, filedialog, messagebox
+
+# Hide tkinter root window
+root = Tk()
+root.withdraw()
+
+# Ask user to select the Excel file
+file_path = filedialog.askopenfilename(
+    title="Select Excel File",
+    filetypes=[("Excel files", "*.xlsx *.xls")]
+)
+
+if not file_path:
+    messagebox.showinfo("Cancelled", "No file selected. Exiting.")
+    exit()
+
+# Read the Excel file
+try:
+    df = pd.read_excel(file_path)
+except Exception as e:
+    messagebox.showerror("Error", f"Failed to read the Excel file:\n{e}")
+    exit()
+
+url_column_name = 'URL'
+canonical_column_name = 'Canonical url'
+
+# Ensure URL column exists
+if url_column_name not in df.columns:
+    messagebox.showerror("Missing Column", f"Column '{url_column_name}' not found in the Excel file.")
+    exit()
+
+# Add 'Canonical url' column if not present, explicitly cast it to string
+if canonical_column_name not in df.columns:
+    df[canonical_column_name] = pd.Series(dtype='str')
+
+# Ensure the column is explicitly of string type to avoid dtype issues
+df[canonical_column_name] = df[canonical_column_name].astype(str)
+
+# Process each URL
+for idx, url in enumerate(df[url_column_name]):
+    if pd.isna(url) or not isinstance(url, str) or not url.startswith('http'):
+        df.at[idx, canonical_column_name] = 'Invalid or missing URL'
+        continue
+
+    try:
+        response = requests.get(url, timeout=10, headers={'User-Agent': 'Mozilla/5.0'})
+        soup = BeautifulSoup(response.text, 'html.parser')
+        canonical_tag = soup.find('link', rel='canonical')
+        canonical_url = canonical_tag['href'] if canonical_tag else 'Not found'
+    except Exception as e:
+        canonical_url = f'Error: {str(e)}'
+
+    df.at[idx, canonical_column_name] = canonical_url
+    print(f"[{idx+1}] URL: {url} → Canonical: {canonical_url}")
+
+# Save the updated file
+try:
+    df.to_excel(file_path, index=False)
+    messagebox.showinfo("Success", f"Canonical URLs updated successfully in:\n{file_path}")
+except Exception as e:
+    messagebox.showerror("Save Error", f"Failed to save the Excel file:\n{e}")

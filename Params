@@ -1,0 +1,11 @@
+import requests
+
+url = "https://www.dell.com/en-us/shop/dell-laptops/scr/laptops/"
+
+params = {
+    "appref" : "dell-product-line"
+}
+
+response = requests.get(url=url,params= params)
+
+print(response.text)
