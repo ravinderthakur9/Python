@@ -6,8 +6,8 @@ def open_and_show():
     global df
     file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
     df = pd.read_excel(file_path).head(1)
-    result_label.config(text=df.to_string(index=False))
-    status_label.config(text="Status: File opened successfully and data loaded")
+    # result_label.config(text=df.to_string(index=False))
+    # status_label.config(text="Status: File opened successfully and data loaded")
 
 def validate_data():
     file_path1 = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
@@ -16,15 +16,28 @@ def validate_data():
     domain_list = df1["Domain"].astype(str).str.strip().str.lower()
     search_usergroup = str(df.iloc[0]["UserGroup"]).strip().lower()
     usergroup_list = df1["UserGroup"].astype(str).str.strip().str.lower()
-    print(df["Domain"][0])
-    print(search_domain)
-
-    if search_domain in domain_list.values or search_usergroup in usergroup_list.values:
-        result_label1.config(text=f"Match found: Domain {search_domain} and UserGroup {search_usergroup}")
+    redirect_type = df["RedirectionType"][0]
+    
+    if search_domain in domain_list.values:
+        result_label1.config(text=f"Match found: Domain {search_domain}")
         status_label.config(text="Status: Data validated successfully and need to looked into as errors found.")
     else:
-        result_label1.config(text=f"No match found: Domain {search_domain} and UserGroup {search_usergroup}")
+        result_label1.config(text=f"No match found: Domain {search_domain}")
         status_label.config(text="Status: Data validated successfully and good to proceed.")
+    
+    if search_usergroup in usergroup_list.values:
+        result_label2.config(text=f"Match found: Domain {search_usergroup}")
+        status_label.config(text="Status: Data validated successfully and need to looked into as errors found.")
+    else:
+        result_label1.config(text=f"No match found: Domain {search_usergroup}")
+        status_label.config(text="Status: Data validated successfully and good to proceed.")
+    
+    if redirect_type == 301:
+        result_label3.config(text=f"Redirection Type is good {redirect_type}")
+        status_label.config(text="Status: Data validated successfully and good to proceed.")
+    else:
+        result_label1.config(text=f"Redirection Type is wrong as it is {redirect_type}")
+        status_label.config(text="Status: Data validated successfully and need to looked into as errors found.")    
 
 
 root = Tk()
@@ -46,6 +59,12 @@ validate_button.grid(row=1, column=1, padx=15, pady=10, sticky="w")
 
 result_label1 = Label(root, text="", justify="left", anchor="nw", font=("Consolas", 10))
 result_label1.grid(row=2, column=1, padx=15, pady=10, sticky="w")
+
+result_label2 = Label(root, text="", justify="left", anchor="nw", font=("Consolas", 10))
+result_label2.grid(row=2, column=2, padx=15, pady=10, sticky="w")
+
+result_label3 = Label(root, text="", justify="left", anchor="nw", font=("Consolas", 10))
+result_label3.grid(row=2, column=3, padx=15, pady=10, sticky="w")
 
 status_label = Label(root, text="Status: Ready")
 status_label.grid(row=3, column=0, padx=15, pady=10, sticky="w")

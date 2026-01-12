@@ -9,8 +9,8 @@ def validate_data():
     domain_list = df1["Domain"].astype(str).str.strip().str.lower()
 
     if search_domain in domain_list.values:
-        print(f"✅ Match found: {search_domain}")
+        print(f"Match found: {search_domain}")
     else:
-        print(f"❌ No match found: {search_domain}")
+        print(f"No match found: {search_domain}")
 
 validate_data()
