@@ -19,10 +19,10 @@ def validate_data():
 
     if search_domain in domain_list.values and search_usergroup in usergroup_list.values:
         result_label1.config(text=f"Match found: Domain {search_domain} and UserGroup {search_usergroup}")
-        status_label.config(text="Status: Data validated successfully")
+        status_label.config(text="Status: Data validated successfully and need to looked into as errors found.")
     else:
         result_label1.config(text=f"No match found: Domain {search_domain} and UserGroup {search_usergroup}")
-        status_label.config(text="Status: Data validated successfully")
+        status_label.config(text="Status: Data validated successfully and good to proceed.")
 
 
 root = Tk()
