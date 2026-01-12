@@ -11,7 +11,11 @@ def open_and_show():
 def validate_data():
     validate_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls"), ("CSV files", "*.csv")])
     df_validate = pd.read_excel(validate_path)
-
+    matches = df_validate.merge(df, how='inner', on=['Domain','Region'])
+    if matches.empty:
+        status_label.config(text="Status: No matching data found, Date is good to use")
+    else:
+        status_label.config(text="Status: Errors found in data, please check" + matches.to_string(index=False))
 
 root = Tk()
 root.title("Testing window for project1.py")
@@ -27,7 +31,7 @@ open_button.grid(row=1, column=0, padx=15, pady=10, sticky="w")
 result_label = Label(root, text="", justify="left", anchor="nw", font=("Consolas", 10))
 result_label.grid(row=2, column=0, padx=15, pady=10, sticky="w")
 
-validate_button = Button(root, text="Validate Data", command=lambda: status_label.config(text="Status: Data validated successfully"), width=15)
+validate_button = Button(root, text="Validate Data", command=validate_data, width=15)
 validate_button.grid(row=1, column=1, padx=15, pady=10, sticky="w")
 
 status_label = Label(root, text="Status: Ready")
