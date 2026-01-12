@@ -1,21 +1,26 @@
-from tkinter import Tk, Label, Button, filedialog,simpledialog
-from filehandling import fileopen
+from tkinter import Tk, Label, Button, filedialog
 import pandas as pd
+import os
 
 def open_and_show():
-    file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls"), ("CSV files", "*.csv")])
+    global df
+    file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
     df = pd.read_excel(file_path).head(1)
     result_label.config(text=df.to_string(index=False))
     status_label.config(text="Status: File opened successfully and data loaded")
 
 def validate_data():
+    global df
     validate_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls"), ("CSV files", "*.csv")])
     df_validate = pd.read_excel(validate_path)
-    matches = df_validate.merge(df, how='inner', on=['Domain','Region'])
-    if matches.empty:
-        status_label.config(text="Status: No matching data found, Date is good to use")
-    else:
-        status_label.config(text="Status: Errors found in data, please check" + matches.to_string(index=False))
+    total_len = len(df_validate["UserGroup"])
+    for i in range(total_len):
+        if df["Domain"].values[1] in df_validate["Domain"].values[i]:
+            status_label.config(text="Status: Domain is found in restricted list")
+        elif df["UserGroup"].values[1] in df_validate["UserGroup"].values[i]:
+            status_label.config(text="Status: UserGroup is found in restricted list")
+        else:
+            status_label.config(text="Status: No matches found in restricted list")
 
 root = Tk()
 root.title("Testing window for project1.py")
