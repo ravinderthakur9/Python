@@ -10,18 +10,20 @@ def open_and_show():
     status_label.config(text="Status: File opened successfully and data loaded")
 
 def validate_data():
-    global df
-    validate_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls"), ("CSV files", "*.csv")])
-    df_validate = pd.read_excel(validate_path)
-    total_len = len(df_validate["UserGroup"])
-    for i in range(total_len):
-        if df["Domain"][1] == df_validate["Domain"][i]:
-            status_label.config(text="Status: Domain is found in restricted list")
-        elif df["UserGroup"][1] == df_validate["UserGroup"][i]:
-            status_label.config(text="Status: UserGroup is found in restricted list")
-        else:
-            i += 1
-            status_label.config(text="Status: No matches found in restricted list.Good to proceed.")
+    file_path1 = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
+    df1 = pd.read_excel(file_path1)
+    search_domain = str(df.iloc[0]["Domain"]).strip().lower()
+    domain_list = df1["Domain"].astype(str).str.strip().str.lower()
+    search_usergroup = str(df.iloc[0]["UserGroup"]).strip().lower()
+    usergroup_list = df1["UserGroup"].astype(str).str.strip().str.lower()
+
+    if search_domain in domain_list.values and search_usergroup in usergroup_list.values:
+        result_label1.config(text=f"Match found: Domain {search_domain} and UserGroup {search_usergroup}")
+        status_label.config(text="Status: Data validated successfully")
+    else:
+        result_label1.config(text=f"No match found: Domain {search_domain} and UserGroup {search_usergroup}")
+        status_label.config(text="Status: Data validated successfully")
+
 
 root = Tk()
 root.title("Testing window for project1.py")
@@ -39,6 +41,9 @@ result_label.grid(row=2, column=0, padx=15, pady=10, sticky="w")
 
 validate_button = Button(root, text="Validate Data", command=validate_data, width=15)
 validate_button.grid(row=1, column=1, padx=15, pady=10, sticky="w")
+
+result_label1 = Label(root, text="", justify="left", anchor="nw", font=("Consolas", 10))
+result_label1.grid(row=2, column=1, padx=15, pady=10, sticky="w")
 
 status_label = Label(root, text="Status: Ready")
 status_label.grid(row=3, column=0, padx=15, pady=10, sticky="w")
