@@ -15,12 +15,13 @@ def validate_data():
     df_validate = pd.read_excel(validate_path)
     total_len = len(df_validate["UserGroup"])
     for i in range(total_len):
-        if df["Domain"].values[1] in df_validate["Domain"].values[i]:
+        if df["Domain"][1] == df_validate["Domain"][i]:
             status_label.config(text="Status: Domain is found in restricted list")
-        elif df["UserGroup"].values[1] in df_validate["UserGroup"].values[i]:
+        elif df["UserGroup"][1] == df_validate["UserGroup"][i]:
             status_label.config(text="Status: UserGroup is found in restricted list")
         else:
-            status_label.config(text="Status: No matches found in restricted list")
+            i += 1
+            status_label.config(text="Status: No matches found in restricted list.Good to proceed.")
 
 root = Tk()
 root.title("Testing window for project1.py")
