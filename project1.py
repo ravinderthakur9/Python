@@ -7,7 +7,8 @@ def open_and_show():
     file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
     df_transpose = pd.read_excel(file_path).head(1)
     df = df_transpose.transpose()
-    result_label.config(text=df)
+    df.columns = ["Values from intake sheet"]
+    result_label.config(text=df.to_string(index=False,justify="right"))
     status_label.config(text="Status: File opened successfully and data loaded")
 
 def validate_data():
