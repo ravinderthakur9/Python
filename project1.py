@@ -8,17 +8,18 @@ def open_and_show():
     df_transpose = pd.read_excel(file_path).head(1)
     df = df_transpose.transpose()
     df.columns = ["Values from intake sheet"]
-    result_label.config(text=df.to_string(index=False,justify="right"))
+    result_label.config(text=df.to_string(index=True,justify="right"))
     status_label.config(text="Status: File opened successfully and data loaded")
 
 def validate_data():
     file_path1 = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
     df1 = pd.read_excel(file_path1)
-    search_domain = str(df.iloc[0]["Domain"]).strip().lower()
+    search_domain = str(df.loc["Domain","Values from intake sheet"]).strip().lower()
     domain_list = df1["Domain"].astype(str).str.strip().str.lower()
-    search_usergroup = str(df.iloc[0]["UserGroup"]).strip().lower()
+    search_usergroup = str(df.loc["UserGroup","Values from intake sheet"]).strip().lower()
     usergroup_list = df1["UserGroup"].astype(str).str.strip().str.lower()
-    redirect_type = int(df["RedirectionType"][0])
+    redirect_type = int(df.loc["RedirectionType","Values from intake sheet"])
+    print(redirect_type)
 
     Error_found = False
     
