@@ -8,18 +8,17 @@ def open_and_show():
     df_transpose = pd.read_excel(file_path).head(1)
     df = df_transpose.transpose()
     df.columns = ["Values from intake sheet"]
-    result_label.config(text=df.to_string(index=False,justify="right"))
+    result_label.config(text=df.to_string(index=True,justify="right"))
     status_label.config(text="Status: File opened successfully and data loaded")
 
 def validate_data():
     file_path1 = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
     df1 = pd.read_excel(file_path1)
-    search_domain = str(df.iloc[0]["Domain"]).strip().lower()
+    search_domain = str(df.loc["Domain","Values from intake sheet"]).strip().lower()
     domain_list = df1["Domain"].astype(str).str.strip().str.lower()
-    search_usergroup = str(df.iloc[0]["UserGroup"]).strip().lower()
+    search_usergroup = str(df.loc["UserGroup","Values from intake sheet"]).strip().lower()
     usergroup_list = df1["UserGroup"].astype(str).str.strip().str.lower()
-    redirect_type = int(df["RedirectionType"][0])
-
+    redirect_type = int(df.loc["RedirectionType","Values from intake sheet"])
     Error_found = False
     
     if search_domain in domain_list.values:
@@ -42,8 +41,14 @@ def validate_data():
 
     if Error_found:
         status_label.config(text="Status: Data validated successfully and need to looked into as errors found.")
+        proceed_button.grid_remove()
     else:
         status_label.config(text="Status: Data validated successfully and good to proceed.")
+        proceed_button.grid()
+    
+def proceed_action():
+    status_label.config(text="Status: Proceeding with the next steps...")
+
 
 root = Tk()
 root.title("Testing window for project1.py")
@@ -71,11 +76,15 @@ result_label2.grid(row=7, column=0, padx=15, pady=10, sticky="w")
 result_label3 = Label(root, text="", justify="left", anchor="nw", font=("Consolas", 10))
 result_label3.grid(row=8, column=0, padx=15, pady=10, sticky="w")
 
+proceed_button = Button(root, text="Proceed", command=proceed_action, width=15)
+proceed_button.grid(row=9, column=0, padx=15, pady=10, sticky="w")
+proceed_button.grid_remove() 
+
 status_label = Label(root, text="Status: Ready")
-status_label.grid(row=9, column=0, padx=15, pady=10, sticky="w")
+status_label.grid(row=10, column=0, padx=15, pady=10, sticky="w")
 
 quit_button = Button(root, text="Quit", command=root.quit, width=15)
-quit_button.grid(row=10, column=0, padx=15, pady=10, sticky="w")
+quit_button.grid(row=11, column=0, padx=15, pady=10, sticky="w")
 
 root.grid_columnconfigure(0, weight=1)
 
