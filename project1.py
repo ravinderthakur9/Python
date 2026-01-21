@@ -19,6 +19,7 @@ def validate_data():
     search_usergroup = str(df.loc["UserGroup","Values from intake sheet"]).strip().lower()
     usergroup_list = df1["UserGroup"].astype(str).str.strip().str.lower()
     redirect_type = int(df.loc["RedirectionType","Values from intake sheet"])
+
     Error_found = False
     
     if search_domain in domain_list.values:
