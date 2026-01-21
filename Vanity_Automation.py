@@ -62,19 +62,19 @@ root.title("Vanity Automation.py")
 root.state('zoomed')
 root.overrideredirect(True)
 
-header_frame = Frame(root, bg="#f5f5f5", height=100)
+header_frame = Frame(root, bg="#e0e0e0", height=100)
 header_frame.grid(row=0, column=0, columnspan=3, sticky="ew")
 header_frame.grid_propagate(False)
 
 logo_img = Image.open("logo.png")
-logo_img = logo_img.resize((70,70))
+logo_img = logo_img.resize((81,81))
 logo = ImageTk.PhotoImage(logo_img)
 
-logo_label = Label(header_frame, image=logo, bg="#f5f5f5")
+logo_label = Label(header_frame, image=logo, bg="#93b8ba")
 logo_label.image = logo
 logo_label.grid(row=0, column=0, padx=15, pady=10, sticky="w")
 
-header_title = Label(header_frame,text="Vanity Validation Tool",font=("Arial", 18, "bold"),bg="#f5f5f5")
+header_title = Label(header_frame,text="Vanity Validation & Update Tool",font=("Arial", 18, "bold"),bg="#e0e0e0")
 header_frame.grid_columnconfigure(0, weight=0)
 header_frame.grid_columnconfigure(1, weight=1)
 # header_title.grid(row=0, column=1, sticky="w", padx=10)
