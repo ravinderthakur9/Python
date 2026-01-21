@@ -42,7 +42,7 @@ def validate_data():
             Error_found = True
             messages.append(f"Row {index+1}: ❌ Redirect Type invalid ({redirect_type})")
 
-        messages.append("-" * 40)
+        messages.append("-" * 100)
 
     result_label1.config(text="\n".join(messages))
 
@@ -55,19 +55,19 @@ def validate_data():
     
 def proceed_action():
     status_label.config(text="Status: Proceeding with the next steps...")
-    webbrowser.open("https://www.dell.com")
+    webbrowser.open("https://linkstudio.dell.com/home")
 
 root = Tk()
 root.title("Vanity Automation.py")
 root.state('zoomed')
 root.overrideredirect(True)
 
-header_frame = Frame(root, bg="#f5f5f5", height=80)
+header_frame = Frame(root, bg="#f5f5f5", height=100)
 header_frame.grid(row=0, column=0, columnspan=3, sticky="ew")
 header_frame.grid_propagate(False)
 
 logo_img = Image.open("logo.png")
-logo_img = logo_img.resize((60, 60))
+logo_img = logo_img.resize((70,70))
 logo = ImageTk.PhotoImage(logo_img)
 
 logo_label = Label(header_frame, image=logo, bg="#f5f5f5")
