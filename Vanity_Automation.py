@@ -47,10 +47,10 @@ def validate_data():
     result_label1.config(text="\n".join(messages))
 
     if Error_found:
-        status_label.config(text="Status: Validation completed with errors.")
+        status_label.config(text="Status: Validation completed with errors. Click on Quit to exit and fix the issues.")
         proceed_button.grid_remove()
     else:
-        status_label.config(text="Status: Validation successful. All rows good.")
+        status_label.config(text="Status: Validation successful. All rows good. Click on Proceed button to continue to Link Studio.")
         proceed_button.grid()
     
 def proceed_action():
@@ -114,7 +114,7 @@ quit_button.grid(row=11, column=0, padx=15, pady=10, sticky="w")
 footer_frame = Frame(root, bg="#e0e0e0", height=80)
 footer_frame.grid(row=2, column=0, columnspan=3, sticky="ew")
 footer_frame.grid_propagate(False)
-footer_label = Label(footer_frame,text="© 2026 Internal QA Tool | All Rights Reserved",bg="#e0e0e0",font=("Arial", 9))
+footer_label = Label(footer_frame,text="© 2026 Internal Vanity Updation Tool | Designed by Karuna Sagar| Built by Shiv Ravinder",bg="#e0e0e0",font=("Arial", 9))
 footer_label.place(relx=0.5, rely=0.5, anchor="center")
 
 root.grid_rowconfigure(1, weight=1)
