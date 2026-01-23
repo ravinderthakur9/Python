@@ -7,38 +7,10 @@ from PIL import Image, ImageTk
 def open_and_show():
     global df
     file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
-    df = pd.read_excel(file_path)
-    
-    for index,row in df.iterrows():
-        domain = str(row["Domain"]).strip().lower()
-        usergroup = str(row["UserGroup"]).strip().lower()
-        redirect_type = int(row["RedirectionType"])
-        messages = []
-        
-        if domain in domain_list.values:
-            Error_found = True
-            messages.append(f"Row {index+1}: ❌ Domain exists ({domain})")
-        else:
-            messages.append(f"Row {index+1}: ✅ Domain OK")
-
-        if usergroup in usergroup_list.values:
-            Error_found = True
-            messages.append(f"Row {index+1}: ❌ UserGroup exists ({usergroup})")
-        else:
-            messages.append(f"Row {index+1}: ✅ UserGroup OK")
-
-        if redirect_type == 301:
-            messages.append(f"Row {index+1}: ✅ Redirect Type OK (301)")
-        else:
-            Error_found = True
-            messages.append(f"Row {index+1}: ❌ Redirect Type invalid ({redirect_type})")
-
-        messages.append("-" * 100)
-        
+    df = pd.read_excel(file_path)        
     result_label.config(text=df.to_string(index=False, justify="right"))
     total_rows =  len(df["Domain"])
-    print(total_rows)
-    print(df)
+    status_label.config(text="Status: Data loaded successfully. Click on Validate Button to find check any errors.")
 
 def validate_data():
     file_path1 = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
@@ -55,25 +27,25 @@ def validate_data():
         
         if domain in domain_list.values:
             Error_found = True
-            messages.append(f"Row {index+1}: ❌ Domain exists ({domain})")
+            messages.append(f"Row{index+1}: ❌ Domain exists ({domain})")
         else:
-            messages.append(f"Row {index+1}: ✅ Domain OK")
+            messages.append("✅ Domain OK")
 
         if usergroup in usergroup_list.values:
             Error_found = True
-            messages.append(f"Row {index+1}: ❌ UserGroup exists ({usergroup})")
+            messages.append(f"Row{index+1}: ❌ UserGroup exists ({usergroup})")
         else:
-            messages.append(f"Row {index+1}: ✅ UserGroup OK")
+            messages.append("✅ UserGroup OK")
 
         if redirect_type == 301:
-            messages.append(f"Row {index+1}: ✅ Redirect Type OK (301)")
+            messages.append("✅ Redirect Type OK (301)")
         else:
             Error_found = True
-            messages.append(f"Row {index+1}: ❌ Redirect Type invalid ({redirect_type})")
+            messages.append(f"❌ Redirect Type invalid ({redirect_type})")
 
         messages.append("-" * 100)
 
-    result_label1.config(text="\n".join(messages))
+        result_label[index].config(text="\n".join(messages))
 
     if Error_found:
         status_label.config(text="Status: Validation completed with errors. Click on Quit to exit and fix the issues.")
@@ -124,11 +96,11 @@ validate_button.grid(row=5, column=0, padx=15, pady=10, sticky="w")
 result_label1 = Label(main_frame, text="", justify="left", anchor="nw", font=("Consolas", 10))
 result_label1.grid(row=6, column=0, padx=15, pady=10, sticky="w")
 
-# result_label2 = Label(main_frame, text="", justify="left", anchor="nw", font=("Consolas", 10))
-# result_label2.grid(row=7, column=0, padx=15, pady=10, sticky="w")
+result_label2 = Label(main_frame, text="", justify="left", anchor="nw", font=("Consolas", 10))
+result_label2.grid(row=7, column=0, padx=15, pady=10, sticky="w")
 
-# result_label3 = Label(main_frame, text="", justify="left", anchor="nw", font=("Consolas", 10))
-# result_label3.grid(row=8, column=0, padx=15, pady=10, sticky="w")
+result_label3 = Label(main_frame, text="", justify="left", anchor="nw", font=("Consolas", 10))
+result_label3.grid(row=8, column=0, padx=15, pady=10, sticky="w")
 
 proceed_button = Button(main_frame, text="Proceed", command=proceed_action, width=15,bg="green",fg="white")
 proceed_button.grid(row=9, column=0, padx=15, pady=10, sticky="w")
