@@ -128,6 +128,22 @@ def proceed_action():
     status_label.config(text="Status: Proceeding with the next steps...")
     webbrowser.open("https://linkstudio.dell.com/home")
 
+def clear_screen():
+    global df
+    df = None
+
+    input_text.config(state="normal")
+    input_text.delete("1.0", "end")
+    input_text.config(state="disabled")
+
+    result_text.config(state="normal")
+    result_text.delete("1.0", "end")
+    result_text.config(state="disabled")
+
+    status_label.config(text="Status: Screen cleared. Please upload a new file.")
+
+    proceed_button.grid_remove()
+
 root = Tk()
 root.title("Vanity Automation.py")
 root.state('zoomed')
@@ -183,6 +199,9 @@ status_label.grid(row=10, column=0, padx=15, pady=10, sticky="w")
 
 quit_button = Button(main_frame, text="Quit", command=root.quit, width=15,bg="red",fg="white")
 quit_button.grid(row=11, column=0, padx=15, pady=10, sticky="w")
+
+clear_button = Button(main_frame,text="Clear Screen",command=clear_screen,width=15,bg="orange",fg="black")
+clear_button.grid(row=3, column=0, padx=15, pady=10, sticky="w")
 
 footer_frame = Frame(root, bg="#e0e0e0", height=80)
 footer_frame.grid(row=2, column=0, columnspan=3, sticky="ew")
