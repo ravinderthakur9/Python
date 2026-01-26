@@ -12,14 +12,7 @@ def create_scrollable_text(parent, width=240, height=15):
     scrollbar = Scrollbar(frame)
     scrollbar.pack(side="right", fill="y")
 
-    text = Text(
-        frame,
-        width=width,
-        height=height,
-        yscrollcommand=scrollbar.set,
-        wrap="none",
-        font=("Consolas", 10)
-    )
+    text = Text(frame,width=width,height=height,yscrollcommand=scrollbar.set,wrap="none",font=("Consolas", 10)
     text.pack(side="left", fill="both", expand=True)
 
     scrollbar.config(command=text.yview)
