@@ -27,6 +27,12 @@ def create_scrollable_text(parent, width=240, height=15):
 def open_and_show():
     global df
     file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
+
+    result_text.config(state="normal")
+    result_text.delete("1.0", "end")
+    result_text.config(state="disabled")
+    proceed_button.grid_remove()
+    
     df = pd.read_excel(file_path)
 
     input_text.config(state="normal")
@@ -72,6 +78,16 @@ def open_and_show():
     input_text.config(state="disabled")    
 
 def validate_data():
+    global df
+    if df is None:
+        status_label.config(
+            text="Status: Please upload a file before validating."
+        )
+        return    
+    result_text.config(state="normal")
+    result_text.delete("1.0", "end")
+    proceed_button.grid_remove()
+
     file_path1 = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx *.xls")])
     ref_df = pd.read_excel(file_path1)
 
