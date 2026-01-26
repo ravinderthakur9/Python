@@ -3,6 +3,8 @@ import pandas as pd
 import webbrowser
 from PIL import Image, ImageTk
 
+df = None
+
 def create_scrollable_text(parent, width=240, height=15):
     frame = Frame(parent)
     frame.grid(sticky="w")
@@ -79,11 +81,13 @@ def open_and_show():
 
 def validate_data():
     global df
+    
     if df is None:
         status_label.config(
             text="Status: Please upload a file before validating."
         )
-        return    
+        return 
+       
     result_text.config(state="normal")
     result_text.delete("1.0", "end")
     proceed_button.grid_remove()
