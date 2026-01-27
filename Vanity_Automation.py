@@ -1,6 +1,6 @@
 from tkinter import Tk, Label, Button, filedialog,Frame, Scrollbar, Text
 import pandas as pd
-import webbrowser
+from playwright.sync_api import sync_playwright
 from PIL import Image, ImageTk
 
 df = None
@@ -139,8 +139,16 @@ def validate_data():
 
     
 def proceed_action():
-    status_label.config(text="Status: Proceeding with the next steps...")
-    webbrowser.open("https://linkstudio.dell.com/home")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto("https://linkstudio.dell.com/home",timeout=1000000)
+        page.get_by_role("link", name="Vanities").click()
+        page.get_by_role("button", name="Create").click()
+
+    context.close()
+    browser.close()
 
 def clear_screen():
     global df
