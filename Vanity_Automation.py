@@ -1,6 +1,6 @@
 from tkinter import Tk, Label, Button, filedialog,Frame, Scrollbar, Text
 import pandas as pd
-import webbrowser
+from playwright.sync_api import sync_playwright
 from PIL import Image, ImageTk
 
 df = None
@@ -69,6 +69,7 @@ def open_and_show():
             text=f"Status: Data loaded successfully with {total_rows} rows. "
                  f"No missing data found. Kindly proceed to validate."
         )
+        validate_button.grid()
 
     input_text.config(state="disabled")    
 
@@ -138,8 +139,17 @@ def validate_data():
 
     
 def proceed_action():
-    status_label.config(text="Status: Proceeding with the next steps...")
-    webbrowser.open("https://linkstudio.dell.com/home")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto("https://linkstudio.dell.com/home",timeout=2000000)
+        page.get_by_role("link", name="Vanities").click()
+        page.get_by_role("button", name="Create").click()
+        page.wait_for_timeout(50000)
+
+    context.close()
+    browser.close()
 
 def clear_screen():
     global df
@@ -219,7 +229,7 @@ clear_button.grid(row=3, column=0, padx=15, pady=10, sticky="w")
 footer_frame = Frame(root, bg="#e0e0e0", height=80)
 footer_frame.grid(row=2, column=0, columnspan=3, sticky="ew")
 footer_frame.grid_propagate(False)
-footer_label = Label(footer_frame,text="© 2026 Internal Vanity Updation Tool | Designed by Karuna Sagar| Built by Shiv Ravinder",bg="#e0e0e0",font=("Arial", 9))
+footer_label = Label(footer_frame,text="© 2026 Internal Vanity Updation Tool | Developed by Shiv Ravinder with inputs by Karuna Sagar |",bg="#e0e0e0",font=("Arial", 9))
 footer_label.place(relx=0.5, rely=0.5, anchor="center")
 
 root.grid_rowconfigure(1, weight=1)
